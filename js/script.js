@@ -42,10 +42,15 @@ document.addEventListener(RENDER_EVENT, function () {
   const uncompletedTODOist = document.getElementById("todos");
   uncompletedTODOist.innerHTML = "";
 
+  const completedTODOList = document.getElementById("completed-todos");
+  completedTODOList.innerHTML = "";
+
   for (const todoItem of todos) {
     const todoElement = makeTodo(todoItem);
     if (!todoItem.isCompleted) {
       uncompletedTODOist.append(todoElement);
+    } else {
+      completedTODOList.append(todoElement);
     }
   }
 });
@@ -94,6 +99,32 @@ function makeTodo(todoObject) {
   }
 
   return container;
+}
+function findTodoIndex(todoId) {
+  for (const index in todos) {
+    if (todos[index].id == todoId) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+function removeTaskFromComplete(todoId) {
+  const todotarget = findTodoIndex(todoId);
+
+  if (todotarget == -1) return;
+
+  todos.splice(todotarget, 1);
+  document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+function undoTaskFromCompleted(todoId) {
+  const todoTarget = findTodo(todoId);
+
+  if (todoTarget == null) return;
+
+  todoTarget.isCompleted = false;
+  document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
 // fungsi button
